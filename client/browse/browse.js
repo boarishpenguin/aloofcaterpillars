@@ -23,18 +23,17 @@ angular.module('browse',['ngMaterial', 'ngMessages', 'factories', 'ngAnimate', '
   $scope.browseMeals = [];
 
   Users.getUserInfo().then(function (user){
-    return user.displayName;
-  }).then(function (displayName){
+    return user.username;
+  }).then(function (username){
     Meals.getAllMeals().then(function(data){
       $scope.browseMeals = data.data.map(function(datum) {
         datum.ingredients.length ? datum.ingredients = datum.ingredients.join(', ') : datum.ingredients = 'Not Available';
         datum.tags.length ? datum.tags = datum.tags.join(', ') : datum.tags = 'None/Not Available';
 
+        if (datum._creator.username === username) {
+          datum.self = true;
+        }
         return datum;
-      })
-      .filter(function(datum) {
-
-        return datum._creator.displayName !== displayName;
       });
     });
   })
